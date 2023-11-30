@@ -1,0 +1,45 @@
+From 6f5a889b39f02a63b940e02deaf6c50f27201edb Mon Sep 17 00:00:00 2001
+From: Pranav Vashi <neobuddy89@gmail.com>
+Date: Tue, 9 Aug 2022 10:21:32 +0530
+Subject: [PATCH] Set navbar color for device default settings theme
+
+* This style is used by apps like Settings and Launcher.
+* Keeping navbar as white/black creates mismatch with monet enabled background
+  and it appears different from rest of the screen
+* Let's match it to background color, so that navbar is also monet themed
+  without divider
+
+Signed-off-by: Pranav Vashi <neobuddy89@gmail.com>
+---
+ core/res/res/values-night/themes_device_defaults.xml | 2 +-
+ core/res/res/values/themes_device_defaults.xml       | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/core/res/res/values-night/themes_device_defaults.xml b/core/res/res/values-night/themes_device_defaults.xml
+index 7cfdba7a65bee..9712951f04903 100644
+--- a/core/res/res/values-night/themes_device_defaults.xml
++++ b/core/res/res/values-night/themes_device_defaults.xml
+@@ -52,7 +52,7 @@ easier.
+     <!-- DeviceDefault theme for a window that should look like the Settings app.  -->
+     <style name="Theme.DeviceDefault.Settings" parent="Theme.DeviceDefault">
+         <item name="windowLightStatusBar">false</item>
+-        <item name="navigationBarColor">@android:color/black</item>
++        <item name="navigationBarColor">?attr/colorBackground</item>
+         <item name="windowLightNavigationBar">false</item>
+ 
+         <item name="colorPrimary">@color/primary_dark_device_default_settings</item>
+diff --git a/core/res/res/values/themes_device_defaults.xml b/core/res/res/values/themes_device_defaults.xml
+index d8346d87f6240..09679ca4651c5 100644
+--- a/core/res/res/values/themes_device_defaults.xml
++++ b/core/res/res/values/themes_device_defaults.xml
+@@ -5614,8 +5614,8 @@ easier.
+         <item name="colorEdgeEffect">@color/edge_effect_device_default_light</item>
+ 
+         <!-- Add white nav bar with divider that matches material -->
+-        <item name="navigationBarDividerColor">@color/navigation_bar_divider_device_default_settings</item>
+-        <item name="navigationBarColor">@android:color/white</item>
++        <item name="navigationBarDividerColor">@null</item>
++        <item name="navigationBarColor">?attr/colorBackground</item>
+         <item name="windowLightNavigationBar">true</item>
+ 
+         <!-- Dialog attributes -->
