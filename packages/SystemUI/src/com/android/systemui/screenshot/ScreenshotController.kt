@@ -513,7 +513,7 @@ internal constructor(
     
     private fun isScreenShotSoundEnabled(): Boolean {
         return Settings.System.getIntForUser(context.contentResolver,
-                 "screenshot_sound_enabled", 1, UserHandle.USER_CURRENT) == 1
+                 "screenshot_sound_enabled", 0, UserHandle.USER_CURRENT) == 1
     }
 
     /** Reset screenshot view and then call onCompleteRunnable */
