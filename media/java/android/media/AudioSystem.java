@@ -294,6 +294,8 @@ public class AudioSystem
             case AUDIO_FORMAT_APTX: return BluetoothCodecConfig.SOURCE_CODEC_TYPE_APTX;
             case AUDIO_FORMAT_APTX_HD: return BluetoothCodecConfig.SOURCE_CODEC_TYPE_APTX_HD;
             case AUDIO_FORMAT_LDAC: return BluetoothCodecConfig.SOURCE_CODEC_TYPE_LDAC;
+            case AUDIO_FORMAT_LHDC: return BluetoothCodecConfig.SOURCE_CODEC_TYPE_LHDCV3;
+            case AUDIO_FORMAT_LHDC_LL: return BluetoothCodecConfig.SOURCE_CODEC_TYPE_LHDCV5;
             case AUDIO_FORMAT_LC3: return BluetoothCodecConfig.SOURCE_CODEC_TYPE_LC3;
             case AUDIO_FORMAT_OPUS: return BluetoothCodecConfig.SOURCE_CODEC_TYPE_OPUS;
             default:
