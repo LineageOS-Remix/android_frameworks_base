@@ -5879,7 +5879,6 @@ public final class Settings {
         @Readable
         public static final String ACCELEROMETER_ROTATION = "accelerometer_rotation";
 
-
         /**
          * Control the type of rotation which can be performed using the accelerometer
          * if ACCELEROMETER_ROTATION is enabled.
@@ -12834,12 +12833,6 @@ public final class Settings {
          * @hide
          */
         public static final String TETHERING_ALLOW_VPN_UPSTREAMS = "tethering_allow_vpn_upstreams";
-
-        /**
-         * Show app volume rows in volume panel
-         * @hide
-         */
-        public static final String SHOW_APP_VOLUME = "show_app_volume";
 
         /**
          * Whether contextual screen timeout is enabled.
@@ -21409,14 +21402,7 @@ public final class Settings {
         @SdkConstant(SdkConstant.SdkConstantType.ACTIVITY_INTENT_ACTION)
         public static final String ACTION_VOLUME =
                 "android.settings.panel.action.VOLUME";
-
-        /**
-         * @hide
-         */
-        public static final String ACTION_APP_VOLUME =
-                "android.settings.panel.action.APP_VOLUME";
     }
-
 
     /**
      * Activity Action: Show setting page to process the addition of Wi-Fi networks to the user's
