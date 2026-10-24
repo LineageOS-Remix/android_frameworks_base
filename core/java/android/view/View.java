@@ -34306,21 +34306,14 @@ public class View implements Drawable.Callback, KeyEvent.Callback,
     }
 
     private float convertVelocityToFrameRate(float velocityPps) {
-        // Internal testing has shown that this gives a premium experience:
-        // above 300dp/s => 120fps
-        // between 300dp/s and 125fps => 80fps
-        // below 125dp/s => 60fps
-        float density = mAttachInfo.mDensity;
-        float velocityDps = velocityPps / density;
-        float frameRate;
-        if (velocityDps > 300f) {
-            frameRate = MAX_FRAME_RATE; // Use maximum at fast motion
-        } else if (velocityDps > 125f) {
-            frameRate = 80f; // Use medium frame rate when motion is slower
-        } else {
-            frameRate = 60f; // Use minimum frame rate when motion is very slow
+        float maxFps = MAX_FRAME_RATE;
+        if (mAttachInfo != null && mAttachInfo.mDisplay != null) {
+            final Display.Mode mode = mAttachInfo.mDisplay.getMode();
+            if (mode != null && mode.getRefreshRate() > 60f) {
+                maxFps = mode.getRefreshRate();
+            }
         }
-        return frameRate;
+        return maxFps;
     }
 
     /**
