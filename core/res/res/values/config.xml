@@ -586,6 +586,11 @@
          docked if the dock is configured to enable the accelerometer. -->
     <bool name="config_supportAutoRotation">true</bool>
 
+    <!-- Whether to use the device orientation sensor (TYPE_DEVICE_ORIENTATION) for auto-rotation
+         if available, instead of the accelerometer. Defaults to true. Some devices have broken,
+         unresponsive, or sluggish device orientation sensors in their HAL. -->
+    <bool name="config_useDeviceOrientationSensor">true</bool>
+
     <!-- If true, allows rotation resolver service to help resolve screen rotation. -->
     <bool name="config_allowRotationResolver">true</bool>
 

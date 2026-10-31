@@ -123,31 +123,44 @@ public abstract class WindowOrientationListener {
         mDefaultRotation = defaultRotation;
         mSensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         mRate = rate;
-        List<Sensor> l = mSensorManager.getSensorList(Sensor.TYPE_DEVICE_ORIENTATION);
-        Sensor wakeUpDeviceOrientationSensor = null;
-        Sensor nonWakeUpDeviceOrientationSensor = null;
-        /**
-         *  Prefer the wakeup form of the sensor if implemented.
-         *  It's OK to look for just two types of this sensor and use
-         *  the last found. Typical devices will only have one sensor of
-         *  this type.
-         */
-        for (Sensor s : l) {
-            if (s.isWakeUpSensor()) {
-                wakeUpDeviceOrientationSensor = s;
-            } else {
-                nonWakeUpDeviceOrientationSensor = s;
+
+        boolean useDeviceOrientationSensor = true;
+        try {
+            useDeviceOrientationSensor = context.getResources().getBoolean(
+                    com.android.internal.R.bool.config_useDeviceOrientationSensor);
+        } catch (Exception e) {
+            // default to true
+        }
+        useDeviceOrientationSensor = SystemProperties.getBoolean(
+                "persist.wm.use_device_orientation_sensor", useDeviceOrientationSensor);
+
+        if (useDeviceOrientationSensor) {
+            List<Sensor> l = mSensorManager.getSensorList(Sensor.TYPE_DEVICE_ORIENTATION);
+            Sensor wakeUpDeviceOrientationSensor = null;
+            Sensor nonWakeUpDeviceOrientationSensor = null;
+            /**
+             *  Prefer the wakeup form of the sensor if implemented.
+             *  It's OK to look for just two types of this sensor and use
+             *  the last found. Typical devices will only have one sensor of
+             *  this type.
+             */
+            for (Sensor s : l) {
+                if (s.isWakeUpSensor()) {
+                    wakeUpDeviceOrientationSensor = s;
+                } else {
+                    nonWakeUpDeviceOrientationSensor = s;
+                }
             }
-        }
 
-        if (wakeUpDeviceOrientationSensor != null) {
-            mSensor = wakeUpDeviceOrientationSensor;
-        } else {
-            mSensor = nonWakeUpDeviceOrientationSensor;
-        }
+            if (wakeUpDeviceOrientationSensor != null) {
+                mSensor = wakeUpDeviceOrientationSensor;
+            } else {
+                mSensor = nonWakeUpDeviceOrientationSensor;
+            }
 
-        if (mSensor != null) {
-            mOrientationJudge = new OrientationSensorJudge();
+            if (mSensor != null) {
+                mOrientationJudge = new OrientationSensorJudge();
+            }
         }
 
         if (mOrientationJudge == null) {
