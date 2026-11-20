@@ -634,7 +634,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
 
     @Override
     public boolean getExpanded() {
-        return mShadeRepository.getLegacyIsQsExpanded().getValue();
+        return mSplitShadeEnabled || mShadeRepository.getLegacyIsQsExpanded().getValue();
     }
 
     @VisibleForTesting
@@ -1070,7 +1070,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
         }
 
         if (mQs == null) return;
-        mQs.setExpanded(getExpanded());
+        mQs.setExpanded(mSplitShadeEnabled || getExpanded());
     }
 
     /** update expanded state of QS */
@@ -2405,8 +2405,8 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
 
         @Override
         public void flingTopOverscroll(float velocity, boolean open) {
-            // in split shade mode we want to expand/collapse QS only when touch happens within QS
-            if (isSplitShadeAndTouchXOutsideQs(mInitialTouchX)) {
+            // When in split shade, notification stack overscroll flings should never affect QS
+            if (mSplitShadeEnabled) {
                 return;
             }
             mLastOverscroll = 0f;

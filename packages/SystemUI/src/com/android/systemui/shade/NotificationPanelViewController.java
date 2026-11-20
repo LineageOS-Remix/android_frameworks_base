@@ -1367,7 +1367,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
 
         // when we switch between split shade and regular shade we want to enforce setting qs to
         // the default state: expanded for split shade and collapsed otherwise
-        if (!isKeyguardShowing() && isPanelExpanded()) {
+        if (!isKeyguardShowing()) {
             mQsController.setExpanded(mSplitShadeEnabled);
         }
         if (isKeyguardShowing() && mQsController.getExpanded() && mSplitShadeEnabled) {
@@ -2586,7 +2586,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             return true;
         }
 
-        if (mNotificationStackScrollLayoutController.isScrolledToBottom()) {
+        if (!mSplitShadeEnabled && mNotificationStackScrollLayoutController.isScrolledToBottom()) {
             return true;
         }
 

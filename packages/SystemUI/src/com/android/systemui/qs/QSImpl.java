@@ -465,25 +465,26 @@ public class QSImpl implements QS, CommandQueue.Callbacks, StatusBarStateControl
     }
 
     private void updateQsState() {
-        final boolean expandVisually = mQsExpanded || mStackScrollerOverscrolling
+        final boolean isExpanded = mQsExpanded || mInSplitShade;
+        final boolean expandVisually = isExpanded || mStackScrollerOverscrolling
                 || mHeaderAnimating;
-        mQSPanelController.setExpanded(mQsExpanded);
+        mQSPanelController.setExpanded(isExpanded);
         boolean keyguardShowing = isKeyguardState();
-        mHeader.setVisibility((mQsExpanded || !keyguardShowing || mHeaderAnimating
+        mHeader.setVisibility((isExpanded || !keyguardShowing || mHeaderAnimating
                 || mShowCollapsedOnKeyguard)
                 ? View.VISIBLE
                 : View.INVISIBLE);
         mHeader.setExpanded((keyguardShowing && !mHeaderAnimating && !mShowCollapsedOnKeyguard)
-                || (mQsExpanded && !mStackScrollerOverscrolling), mQuickQSPanelController);
+                || (isExpanded && !mStackScrollerOverscrolling), mQuickQSPanelController);
         boolean qsPanelVisible = !mQsDisabled && expandVisually;
-        boolean footerVisible = qsPanelVisible && (mQsExpanded || !keyguardShowing
+        boolean footerVisible = qsPanelVisible && (isExpanded || !keyguardShowing
                 || mHeaderAnimating || mShowCollapsedOnKeyguard);
         mFooter.setVisibility(footerVisible ? View.VISIBLE : View.INVISIBLE);
         if (mFooterActionsView != null) {
             mFooterActionsView.setVisibility(footerVisible ? View.VISIBLE : View.INVISIBLE);
         }
         mFooter.setExpanded((keyguardShowing && !mHeaderAnimating && !mShowCollapsedOnKeyguard)
-                || (mQsExpanded && !mStackScrollerOverscrolling));
+                || (isExpanded && !mStackScrollerOverscrolling));
         mQSPanelController.setVisibility(qsPanelVisible ? View.VISIBLE : View.INVISIBLE);
         if (DEBUG) {
             Log.d(TAG, "Footer: " + footerVisible + ", QS Panel: " + qsPanelVisible);
@@ -605,6 +606,9 @@ public class QSImpl implements QS, CommandQueue.Callbacks, StatusBarStateControl
     @Override
     public void setInSplitShade(boolean inSplitShade) {
         mInSplitShade = inSplitShade;
+        if (mInSplitShade) {
+            mQsExpanded = true;
+        }
         updateShowCollapsedOnKeyguard();
         updateQsState();
     }

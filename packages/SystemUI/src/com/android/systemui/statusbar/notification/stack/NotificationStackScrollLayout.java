@@ -4890,7 +4890,7 @@ public class NotificationStackScrollLayout
                 if (mFooterClearAllListener != null) {
                     mFooterClearAllListener.onClearAll();
                 }
-                clearNotifications(ROWS_ALL, true /* closeShade */);
+                clearNotifications(ROWS_ALL, !mShouldUseSplitNotificationShade /* closeShade */);
                 footerView.setClearAllButtonVisible(false /* visible */, true /* animate */);
             });
         }
@@ -5771,7 +5771,7 @@ public class NotificationStackScrollLayout
 
     /** Clear all clearable notifications when the user requests it. */
     public void clearAllNotifications(boolean hideSilentSection) {
-        clearNotifications(ROWS_ALL, /* closeShade = */ true, hideSilentSection);
+        clearNotifications(ROWS_ALL, /* closeShade = */ !mShouldUseSplitNotificationShade, hideSilentSection);
     }
 
     /** Clear all clearable silent notifications when the user requests it. */
@@ -6026,6 +6026,7 @@ public class NotificationStackScrollLayout
     }
 
     void onSwipeEnd() {
+        requestDisallowInterceptTouchEvent(false);
         updateFirstAndLastBackgroundViews();
         mController.getNotificationRoundnessManager()
                 .setViewsAffectedBySwipe(null, null, null);
