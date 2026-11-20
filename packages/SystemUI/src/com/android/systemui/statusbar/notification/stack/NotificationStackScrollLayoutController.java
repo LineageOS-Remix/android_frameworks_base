@@ -863,7 +863,7 @@ public class NotificationStackScrollLayoutController implements Dumpable {
             });
         }
         mView.setClearAllFinishedWhilePanelExpandedRunnable(()-> {
-            if (mShouldUseSplitNotificationShade) {
+            if (mView.isSplitShadeEnabled()) {
                 return;
             }
             final Runnable doCollapseRunnable = () ->

@@ -581,6 +581,10 @@ public class NotificationStackScrollLayout
         mSplitShadeStateController = splitShadeStateController;
         updateSplitNotificationShade();
     }
+
+    public boolean isSplitShadeEnabled() {
+        return mShouldUseSplitNotificationShade;
+    }
     private final FeatureFlags mFeatureFlags;
 
     private final ExpandableView.OnHeightChangedListener mOnChildHeightChangedListener =
