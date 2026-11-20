@@ -259,6 +259,7 @@ public class QSCustomizer extends LinearLayout {
                 setCustomizing(true);
             }
             mOpening = false;
+            mClipper.showBackground();
             if (mQsContainerController != null) {
                 mQsContainerController.setCustomizerAnimating(false);
             }
@@ -268,6 +269,9 @@ public class QSCustomizer extends LinearLayout {
         @Override
         public void onAnimationCancel(Animator animation) {
             mOpening = false;
+            if (isShown) {
+                mClipper.showBackground();
+            }
             if (mQs != null) {
                 mQs.notifyCustomizeChanged();
             }
