@@ -98,9 +98,9 @@ public class Scroller  {
     private static final int FLING_MODE = 1;
 
     @UnsupportedAppUsage
-    private static float DECELERATION_RATE = (float) (Math.log(0.78) / Math.log(0.9));
+    private static float DECELERATION_RATE = (float) (Math.log(0.835) / Math.log(0.9));
     @UnsupportedAppUsage
-    private static final float INFLEXION = 0.35f; // Tension lines cross at (INFLEXION, 1)
+    private static final float INFLEXION = 0.28f; // Tension lines cross at (INFLEXION, 1)
     private static final float START_TENSION = 0.5f;
     private static final float END_TENSION = 1.0f;
     private static final float P1 = START_TENSION * INFLEXION;

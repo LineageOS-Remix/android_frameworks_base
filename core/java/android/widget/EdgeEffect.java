@@ -120,14 +120,14 @@ public class EdgeEffect {
     private static final double LINEAR_DISTANCE_TAKE_OVER = 8.0;
 
     /**
-     * The natural frequency of the stretch spring.
+     * The natural frequency of the stretch spring. Tuned for fluid iOS-like cushioned bounce.
      */
-    private static final double NATURAL_FREQUENCY = 24.657;
+    private static final double NATURAL_FREQUENCY = 19.8;
 
     /**
-     * The damping ratio of the stretch spring.
+     * The damping ratio of the stretch spring. Tuned for soft, organic return without abrupt snapping.
      */
-    private static final double DAMPING_RATIO = 0.98;
+    private static final double DAMPING_RATIO = 0.88;
 
     /**
      * The variation of the velocity for the stretch effect when it meets the bound.
