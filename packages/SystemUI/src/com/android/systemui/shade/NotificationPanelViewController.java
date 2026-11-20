@@ -273,7 +273,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
     public static final float QS_PARALLAX_AMOUNT = 0.175f;
     private static final int NO_FIXED_DURATION = -1;
     private static final long SHADE_OPEN_SPRING_OUT_DURATION = 350L;
-    private static final long SHADE_OPEN_SPRING_BACK_DURATION = 400L;
+    private static final long SHADE_OPEN_SPRING_BACK_DURATION = 300L;
 
     /**
      * The factor of the usual high velocity that is needed in order to reach the maximum overshoot
@@ -3956,7 +3956,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
                 animation -> setOverExpansionInternal((float) animation.getAnimatedValue(),
                         false /* isFromGesture */));
         animator.setDuration(SHADE_OPEN_SPRING_BACK_DURATION);
-        animator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+        animator.setInterpolator(EMPHASIZED_DECELERATE);
         animator.addListener(new AnimatorListenerAdapter() {
             private boolean mCancelled;
 

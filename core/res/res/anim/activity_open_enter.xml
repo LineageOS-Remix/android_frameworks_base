@@ -20,6 +20,20 @@
     android:hasRoundedCorners="true"
     android:shareInterpolator="false">
 
+    <scale
+        android:fromXScale="0.94"
+        android:toXScale="1.0"
+        android:fromYScale="0.94"
+        android:toYScale="1.0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:fillEnabled="true"
+        android:fillBefore="true"
+        android:fillAfter="true"
+        android:interpolator="@interpolator/fast_out_extra_slow_in"
+        android:startOffset="0"
+        android:duration="280" />
+
     <alpha
         android:fromAlpha="0"
         android:toAlpha="1.0"

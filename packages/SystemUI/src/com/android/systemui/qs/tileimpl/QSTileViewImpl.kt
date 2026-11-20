@@ -33,6 +33,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Trace
+import com.android.app.animation.Interpolators
 import android.service.quicksettings.Tile
 import android.text.TextUtils
 import android.util.Log
@@ -237,6 +238,19 @@ constructor(
 
         createAndAddLabels()
         createAndAddSideView()
+    }
+
+    override fun setPressed(pressed: Boolean) {
+        super.setPressed(pressed)
+        if (isAttachedToWindow) {
+            val targetScale = if (pressed) 0.95f else 1.0f
+            animate()
+                .scaleX(targetScale)
+                .scaleY(targetScale)
+                .setDuration(if (pressed) 100 else 180)
+                .setInterpolator(if (pressed) Interpolators.LINEAR else Interpolators.EMPHASIZED_DECELERATE)
+                .start()
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration?) {

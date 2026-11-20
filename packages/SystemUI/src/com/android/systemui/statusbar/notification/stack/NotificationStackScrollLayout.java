@@ -165,9 +165,9 @@ public class NotificationStackScrollLayout
     private boolean mShadeNeedsToClose = false;
 
     @VisibleForTesting
-    static final float RUBBER_BAND_FACTOR_NORMAL = 0.1f;
-    private static final float RUBBER_BAND_FACTOR_AFTER_EXPAND = 0.15f;
-    private static final float RUBBER_BAND_FACTOR_ON_PANEL_EXPAND = 0.21f;
+    static final float RUBBER_BAND_FACTOR_NORMAL = 0.32f;
+    private static final float RUBBER_BAND_FACTOR_AFTER_EXPAND = 0.35f;
+    private static final float RUBBER_BAND_FACTOR_ON_PANEL_EXPAND = 0.42f;
     /**
      * Sentinel value for no current active pointer. Used by {@link #mActivePointerId}.
      */
