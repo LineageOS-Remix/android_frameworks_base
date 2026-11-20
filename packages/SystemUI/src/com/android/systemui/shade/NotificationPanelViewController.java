@@ -1370,6 +1370,9 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
         if (!isKeyguardShowing()) {
             mQsController.setExpanded(mSplitShadeEnabled);
         }
+        if (mSplitShadeEnabled) {
+            mQsController.updateExpansion();
+        }
         if (isKeyguardShowing() && mQsController.getExpanded() && mSplitShadeEnabled) {
             // In single column keyguard - when you swipe from the top - QS is fully expanded and
             // StatusBarState is KEYGUARD. That state doesn't make sense for split shade,

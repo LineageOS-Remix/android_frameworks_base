@@ -545,7 +545,7 @@ public class QSImpl implements QS, CommandQueue.Callbacks, StatusBarStateControl
     @Override
     public void setExpanded(boolean expanded) {
         if (DEBUG) Log.d(TAG, "setExpanded " + expanded);
-        mQsExpanded = expanded;
+        mQsExpanded = mInSplitShade || expanded;
         if (mInSplitShade && mQsExpanded) {
             // in split shade QS is expanded immediately when shade expansion starts and then we
             // also need to listen to changes - otherwise QS is updated only once its fully expanded
