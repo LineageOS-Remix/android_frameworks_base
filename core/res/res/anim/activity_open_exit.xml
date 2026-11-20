@@ -19,50 +19,36 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:shareInterpolator="false">
 
-    <scale
-        android:fromXScale="1.0"
-        android:toXScale="0.96"
-        android:fromYScale="1.0"
-        android:toYScale="0.96"
-        android:pivotX="50%"
-        android:pivotY="50%"
-        android:fillEnabled="true"
-        android:fillBefore="true"
-        android:fillAfter="true"
-        android:interpolator="@interpolator/fast_out_extra_slow_in"
-        android:startOffset="0"
-        android:duration="280" />
-
     <alpha
         android:fromAlpha="1.0"
-        android:toAlpha="1.0"
+        android:toAlpha="0.85"
         android:fillEnabled="true"
         android:fillBefore="true"
         android:fillAfter="true"
-        android:interpolator="@interpolator/standard_accelerate"
+        android:interpolator="@interpolator/fast_out_slow_in"
         android:startOffset="0"
-        android:duration="280" />
+        android:duration="320" />
 
     <translate
         android:fromXDelta="0"
-        android:toXDelta="-96dp"
+        android:toXDelta="-48dp"
         android:fillEnabled="true"
         android:fillBefore="true"
         android:fillAfter="true"
         android:interpolator="@interpolator/fast_out_extra_slow_in"
         android:startOffset="0"
-        android:duration="280" />
+        android:duration="320" />
 
     <extend
         android:fromExtendLeft="0"
         android:fromExtendTop="0"
-        android:fromExtendRight="96dp"
+        android:fromExtendRight="48dp"
         android:fromExtendBottom="0"
         android:toExtendLeft="0"
         android:toExtendTop="0"
-        android:toExtendRight="96dp"
+        android:toExtendRight="48dp"
         android:toExtendBottom="0"
         android:interpolator="@interpolator/fast_out_extra_slow_in"
         android:startOffset="0"
-        android:duration="280" />
+        android:duration="320" />
 </set>
