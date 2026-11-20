@@ -85,7 +85,7 @@ public class CrossTaskBackAnimation extends ShellBackAnimation {
     private static final float MIN_WINDOW_SCALE = 0.8f;
 
     /** Duration of post animation after gesture committed. */
-    private static final int POST_ANIMATION_DURATION_MS = 500;
+    private static final int POST_ANIMATION_DURATION_MS = 260;
 
     private static final float SPRING_SCALE = 100f;
     private static final float DEFAULT_FLING_VELOCITY = 320f;

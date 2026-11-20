@@ -108,6 +108,6 @@ constructor(
 
 
     companion object {
-        private const val POST_COMMIT_DURATION = 450L
+        private const val POST_COMMIT_DURATION = 240L
     }
 }
