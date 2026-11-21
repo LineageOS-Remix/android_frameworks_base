@@ -18,16 +18,17 @@
 
 <set xmlns:android="http://schemas.android.com/apk/res/android"
      android:shareInterpolator="false"
+     android:zAdjustment="top"
      android:hasRoundedCorners="true">
 
     <translate
         android:fromXDelta="0"
-        android:toXDelta="105%"
+        android:toXDelta="100%"
         android:fillEnabled="true"
         android:fillBefore="true"
         android:fillAfter="true"
         android:interpolator="@interpolator/fast_out_extra_slow_in"
         android:startOffset="0"
-        android:duration="500"/>
+        android:duration="330"/>
 
 </set>

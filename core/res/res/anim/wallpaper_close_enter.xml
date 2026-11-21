@@ -23,13 +23,13 @@
     <alpha android:fromAlpha="0" android:toAlpha="1.0"
         android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
         android:interpolator="@interpolator/linear"
-        android:duration="133"/>
+        android:duration="200"/>
 
-    <scale android:fromXScale="70%" android:toXScale="100%"
-        android:fromYScale="70%" android:toYScale="100%"
+    <scale android:fromXScale="94%" android:toXScale="100%"
+        android:fromYScale="94%" android:toYScale="100%"
         android:pivotX="50%"
         android:pivotY="50%"
         android:fillEnabled="true" android:fillBefore="true" android:fillAfter="true"
-        android:interpolator="@interpolator/linear_out_slow_in"
-        android:duration="275" />
+        android:interpolator="@interpolator/fast_out_slow_in"
+        android:duration="280" />
 </set>

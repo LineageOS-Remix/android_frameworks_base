@@ -19,18 +19,20 @@
     android:shareInterpolator="false">
     <alpha
         android:fromAlpha="1.0"
-        android:toAlpha="1.0"
+        android:toAlpha="0.85"
         android:fillEnabled="true"
         android:fillBefore="true"
         android:fillAfter="true"
-        android:interpolator="@interpolator/standard_accelerate"
+        android:interpolator="@interpolator/fast_out_slow_in"
         android:startOffset="0"
-        android:duration="400" />
+        android:duration="320" />
 
     <translate
+        android:fromXDelta="0"
+        android:toXDelta="-48dp"
         android:fillEnabled="true"
         android:fillBefore="true"
         android:fillAfter="true"
         android:interpolator="@interpolator/fast_out_extra_slow_in"
-        android:duration="400"/>
+        android:duration="320"/>
 </set>
