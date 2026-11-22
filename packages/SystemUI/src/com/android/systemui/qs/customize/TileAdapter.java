@@ -24,7 +24,9 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +50,7 @@ import androidx.recyclerview.widget.RecyclerView.State;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.internal.logging.UiEventLogger;
+import com.android.settingslib.Utils;
 import com.android.systemui.FontSizeUtils;
 import com.android.systemui.flags.FeatureFlags;
 import com.android.systemui.flags.Flags;
@@ -373,6 +376,12 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
 
         if (holder.getItemViewType() == TYPE_HEADER) {
             setSelectableForHeaders(holder.itemView);
+            TextView title = holder.itemView.findViewById(android.R.id.title);
+            if (title != null) {
+                Context themedContext =
+                        new ContextThemeWrapper(mContext, R.style.Theme_SystemUI_QuickSettings);
+                title.setTextColor(Utils.getColorAttrDefaultColor(themedContext, R.attr.onSurfaceVariant));
+            }
             return;
         }
         if (holder.getItemViewType() == TYPE_DIVIDER) {
@@ -391,7 +400,11 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
                 titleText = res.getString(R.string.drag_to_remove_tiles);
             }
 
-            ((TextView) holder.itemView.findViewById(android.R.id.title)).setText(titleText);
+            TextView title = ((TextView) holder.itemView.findViewById(android.R.id.title));
+            title.setText(titleText);
+            Context themedContext =
+                    new ContextThemeWrapper(mContext, R.style.Theme_SystemUI_QuickSettings);
+            title.setTextColor(Utils.getColorAttrDefaultColor(themedContext, R.attr.onSurfaceVariant));
             setSelectableForHeaders(holder.itemView);
 
             return;
@@ -435,6 +448,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
         CustomizeTileView tileView =
                 Objects.requireNonNull(
                         holder.getTileAsCustomizeView(), "The holder must have a tileView");
+        tileView.updateResources();
         tileView.changeState(info.state);
         tileView.setShowAppLabel(position > mEditIndex && !info.isSystem);
         // Don't show the side view for third party tiles, as we don't have the actual state.
@@ -730,16 +744,41 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
         }
     };
 
+    public void updateThemeColors() {
+        mDecoration.updateDrawable(mContext);
+        notifyDataSetChanged();
+    }
+
     private class TileItemDecoration extends ItemDecoration {
-        private final Drawable mDrawable;
+        private Drawable mDrawable;
 
         private TileItemDecoration(Context context) {
-            mDrawable = context.getDrawable(R.drawable.qs_customize_tile_decoration);
+            updateDrawable(context);
+        }
+
+        private void updateDrawable(Context context) {
+            Context themedContext =
+                    new ContextThemeWrapper(context, R.style.Theme_SystemUI_QuickSettings);
+            int surfaceDimColor = Utils.getColorAttrDefaultColor(
+                    themedContext, com.android.internal.R.attr.materialColorSurfaceDim);
+            Drawable d = themedContext.getDrawable(R.drawable.qs_customize_tile_decoration);
+            if (d != null) {
+                mDrawable = d.mutate();
+                if (mDrawable instanceof GradientDrawable) {
+                    ((GradientDrawable) mDrawable).setColor(surfaceDimColor);
+                } else {
+                    mDrawable.setTint(surfaceDimColor);
+                }
+            }
         }
 
         @Override
         public void onDraw(Canvas c, RecyclerView parent, State state) {
             super.onDraw(c, parent, state);
+
+            if (mDrawable == null) {
+                return;
+            }
 
             final int childCount = parent.getChildCount();
             final int width = parent.getWidth();

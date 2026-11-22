@@ -101,6 +101,18 @@ public class QSCustomizerController extends ViewController<QSCustomizer> {
                     ((GridLayoutManager) lm).setSpanCount(mTileAdapter.getNumColumns());
                 }
             }
+            mView.updateThemeColors();
+            mTileAdapter.updateThemeColors();
+        }
+
+        @Override
+        public void onUiModeChanged() {
+            onConfigChanged(getResources().getConfiguration());
+        }
+
+        @Override
+        public void onThemeChanged() {
+            onConfigChanged(getResources().getConfiguration());
         }
     };
 
@@ -192,6 +204,8 @@ public class QSCustomizerController extends ViewController<QSCustomizer> {
     /** */
     public void show(int x, int y, boolean immediate) {
         if (!mView.isShown()) {
+            mView.updateThemeColors();
+            mTileAdapter.updateThemeColors();
             setTileSpecs();
             if (immediate) {
                 mView.showImmediately();

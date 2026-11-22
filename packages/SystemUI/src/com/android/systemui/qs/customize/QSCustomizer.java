@@ -22,6 +22,13 @@ import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.InsetDrawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -36,6 +43,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.settingslib.Utils;
 import com.android.systemui.plugins.qs.QS;
 import com.android.systemui.plugins.qs.QSContainerController;
 import com.android.systemui.qs.QSDetailClipper;
@@ -155,11 +163,78 @@ public class QSCustomizer extends LinearLayout {
         }
     }
 
+    public void updateThemeColors() {
+        Context themedContext =
+                new ContextThemeWrapper(getContext(), R.style.Theme_SystemUI_QuickSettings);
+        int underSurfaceColor = Utils.getColorAttrDefaultColor(themedContext, R.attr.underSurface);
+        int surfaceDimColor = Utils.getColorAttrDefaultColor(
+                themedContext, com.android.internal.R.attr.materialColorSurfaceDim);
+
+        View customizeContainer = findViewById(R.id.customize_container);
+        if (customizeContainer != null && customizeContainer.getBackground() instanceof TransitionDrawable) {
+            TransitionDrawable td = (TransitionDrawable) customizeContainer.getBackground();
+            // Layer 0
+            Drawable layer0 = td.getDrawable(0);
+            if (layer0 instanceof InsetDrawable) {
+                Drawable inner = ((InsetDrawable) layer0).getDrawable();
+                if (inner instanceof GradientDrawable) {
+                    ((GradientDrawable) inner).setColor(underSurfaceColor);
+                } else if (inner != null) {
+                    inner.setTint(underSurfaceColor);
+                }
+            } else if (layer0 instanceof GradientDrawable) {
+                ((GradientDrawable) layer0).setColor(underSurfaceColor);
+            } else if (layer0 != null) {
+                layer0.setTint(underSurfaceColor);
+            }
+
+            // Layer 1
+            Drawable layer1 = td.getDrawable(1);
+            if (layer1 instanceof GradientDrawable) {
+                ((GradientDrawable) layer1).setColor(underSurfaceColor);
+            } else if (layer1 != null) {
+                layer1.setTint(underSurfaceColor);
+            }
+        }
+
+        if (mToolbar != null) {
+            Drawable toolbarBg = mToolbar.getBackground();
+            if (toolbarBg instanceof GradientDrawable) {
+                ((GradientDrawable) toolbarBg).setColor(underSurfaceColor);
+            } else if (toolbarBg != null) {
+                toolbarBg.setTint(underSurfaceColor);
+            }
+            mToolbar.setTitleTextColor(
+                    Utils.getColorAttrDefaultColor(themedContext, android.R.attr.textColorPrimary));
+            TypedValue value = new TypedValue();
+            if (themedContext.getTheme().resolveAttribute(android.R.attr.homeAsUpIndicator, value, true)) {
+                mToolbar.setNavigationIcon(
+                        getResources().getDrawable(value.resourceId, themedContext.getTheme()));
+            }
+            updateToolbarMenuFontSize();
+        }
+
+        View navBackdrop = findViewById(R.id.nav_bar_background);
+        if (navBackdrop != null) {
+            Drawable navBg = navBackdrop.getBackground();
+            if (navBg instanceof ColorDrawable) {
+                ((ColorDrawable) navBg).setColor(surfaceDimColor);
+            } else if (navBg instanceof GradientDrawable) {
+                ((GradientDrawable) navBg).setColor(surfaceDimColor);
+            } else if (navBg != null) {
+                navBg.setTint(surfaceDimColor);
+            } else {
+                navBackdrop.setBackgroundColor(surfaceDimColor);
+            }
+        }
+    }
+
     /** Animate and show QSCustomizer panel.
      * @param x,y Location on screen of {@code edit} button to determine center of animation.
      */
     void show(int x, int y, TileAdapter tileAdapter) {
         if (!isShown) {
+            updateThemeColors();
             reloadAdapterTileHeight(tileAdapter);
             mRecyclerView.getLayoutManager().scrollToPosition(0);
             int[] containerLocation = findViewById(R.id.customize_container).getLocationOnScreen();
@@ -180,6 +255,7 @@ public class QSCustomizer extends LinearLayout {
 
     void showImmediately() {
         if (!isShown) {
+            updateThemeColors();
             reloadAdapterTileHeight(mRecyclerView.getAdapter());
             mRecyclerView.getLayoutManager().scrollToPosition(0);
             setVisibility(VISIBLE);
@@ -222,9 +298,9 @@ public class QSCustomizer extends LinearLayout {
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        updateThemeColors();
         mToolbar.setTitleTextAppearance(mContext,
                 android.R.style.TextAppearance_DeviceDefault_Widget_ActionBar_Title);
-        updateToolbarMenuFontSize();
     }
 
     void setCustomizing(boolean customizing) {
@@ -320,7 +396,17 @@ public class QSCustomizer extends LinearLayout {
     private void updateToolbarMenuFontSize() {
         // Clearing and re-adding the toolbar action force updates the font size
         mToolbar.getMenu().clear();
-        mToolbar.getMenu().add(Menu.NONE, MENU_RESET, 0, com.android.internal.R.string.reset)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        MenuItem resetItem = mToolbar.getMenu().add(
+                Menu.NONE, MENU_RESET, 0, com.android.internal.R.string.reset);
+        resetItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        Context themedContext =
+                new ContextThemeWrapper(getContext(), R.style.Theme_SystemUI_QuickSettings);
+        int textColor = Utils.getColorAttrDefaultColor(themedContext, android.R.attr.textColorPrimary);
+        CharSequence title = resetItem.getTitle();
+        if (title != null) {
+            SpannableString span = new SpannableString(title);
+            span.setSpan(new ForegroundColorSpan(textColor), 0, span.length(), 0);
+            resetItem.setTitle(span);
+        }
     }
 }
