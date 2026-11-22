@@ -1003,9 +1003,15 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
                 mBehindTint = Color.TRANSPARENT;
             } else {
                 mBehindAlpha = behindAlpha;
-                if (mState == ScrimState.KEYGUARD && mTransitionToFullShadeProgress > 0.0f) {
-                    mNotificationsAlpha = MathUtils
-                            .saturate(mTransitionToLockScreenFullShadeNotificationsProgress);
+                if (mState == ScrimState.KEYGUARD) {
+                    if (mTransitionToFullShadeProgress > 0.0f) {
+                        mNotificationsAlpha = MathUtils
+                                .saturate(mTransitionToLockScreenFullShadeNotificationsProgress);
+                    } else if (!mClipsQsScrim) {
+                        mNotificationsAlpha = 0f;
+                    } else {
+                        mNotificationsAlpha = Math.max(1.0f - getInterpolatedFraction(), mQsExpansion);
+                    }
                 } else if (mState == ScrimState.SHADE_LOCKED) {
                     // going from KEYGUARD to SHADE_LOCKED state
                     mNotificationsAlpha = getInterpolatedFraction();
@@ -1028,8 +1034,7 @@ public class ScrimController implements ViewTreeObserver.OnPreDrawListener, Dump
             // otherwise there is a flicker to its previous value.
             boolean hideNotificationScrim = (mState == ScrimState.KEYGUARD
                     && mTransitionToFullShadeProgress == 0
-                    && mQsExpansion == 0
-                    && !mClipsQsScrim);
+                    && (!mClipsQsScrim || mQsExpansion == 0));
             if (mKeyguardOccluded || hideNotificationScrim) {
                 mNotificationsAlpha = 0;
             }

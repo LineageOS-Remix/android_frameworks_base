@@ -2657,11 +2657,15 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
                 || (!mHeadsUpManager.isTrackingHeadsUp() || expandedHeight > mHeadsUpStartHeight);
         if (goingBetweenClosedShadeAndExpandedQs && qsShouldExpandWithHeadsUp) {
             float qsExpansionFraction;
-            if (mSplitShadeEnabled) {
+            if (isKeyguardShowing()) {
+                if (mSplitShadeEnabled) {
+                    qsExpansionFraction = 0;
+                } else {
+                    // On Keyguard, interpolate the QS expansion linearly to the panel expansion
+                    qsExpansionFraction = expandedHeight / (getMaxPanelHeight());
+                }
+            } else if (mSplitShadeEnabled) {
                 qsExpansionFraction = 1;
-            } else if (isKeyguardShowing()) {
-                // On Keyguard, interpolate the QS expansion linearly to the panel expansion
-                qsExpansionFraction = expandedHeight / (getMaxPanelHeight());
             } else {
                 // In Shade, interpolate linearly such that QS is closed whenever panel height is
                 // minimum QS expansion + minStackHeight
@@ -4585,9 +4589,7 @@ public final class NotificationPanelViewController implements ShadeSurface, Dump
             mBarState = statusBarState;
             mQsController.setBarState(statusBarState);
 
-            boolean fromShadeToKeyguard = statusBarState == KEYGUARD
-                    && (oldState == SHADE || oldState == SHADE_LOCKED);
-            if (mSplitShadeEnabled && fromShadeToKeyguard) {
+            if (mSplitShadeEnabled && statusBarState == KEYGUARD) {
                 // user can go to keyguard from different shade states and closing animation
                 // may not fully run - we always want to make sure we close QS when that happens
                 // as we never need QS open in fresh keyguard state

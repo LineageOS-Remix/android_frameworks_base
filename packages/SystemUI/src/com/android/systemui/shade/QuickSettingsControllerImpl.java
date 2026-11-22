@@ -647,6 +647,9 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
     }
 
     boolean isGoingBetweenClosedShadeAndExpandedQs() {
+        if (mBarState == KEYGUARD) {
+            return false;
+        }
         // Below is true when QS are expanded and we swipe up from the same bottom of panel to
         // close the whole shade with one motion. Also this will be always true when closing
         // split shade as there QS are always expanded so every collapsing motion is motion from
@@ -1086,7 +1089,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
                     .getNotificationSquishinessFraction();
         }
         final float qsExpansionFraction = computeExpansionFraction();
-        final float adjustedExpansionFraction = mSplitShadeEnabled
+        final float adjustedExpansionFraction = (mSplitShadeEnabled && mBarState != KEYGUARD)
                 ? 1f : computeExpansionFraction();
         mQs.setQsExpansion(
                 adjustedExpansionFraction,
@@ -1234,7 +1237,8 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
         // Split shade has no QQS
         final boolean qqsVisible =
                 !mSplitShadeEnabled && qsExpansionFraction == 0 && qsPanelBottomY > 0;
-        final boolean qsVisible = qsExpansionFraction > 0;
+        final boolean qsVisible = qsExpansionFraction > 0
+                && (mBarState != KEYGUARD || mTransitioningToFullShadeProgress > 0.0f);
         final boolean qsOrQqsVisible = qqsVisible || qsVisible;
         checkCorrectScrimVisibility(qsExpansionFraction);
 
