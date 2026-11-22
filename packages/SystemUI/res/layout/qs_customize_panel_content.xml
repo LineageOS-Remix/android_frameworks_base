@@ -47,7 +47,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="?attr/underSurface"
             android:paddingStart="@dimen/qs_customize_internal_side_paddings"
             android:paddingEnd="@dimen/qs_customize_internal_side_paddings"
             android:paddingBottom="28dp"
