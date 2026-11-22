@@ -270,9 +270,10 @@ public class ViewConfiguration {
 
     /**
      * The coefficient of friction applied to flings/scrolls.
+     * Tuned to 0.0050f for organic, fluid inertia matching premium iOS-level momentum.
      */
     @UnsupportedAppUsage
-    private static final float SCROLL_FRICTION = 0.0072f;
+    private static final float SCROLL_FRICTION = 0.0050f;
 
     /**
      * Max distance in dips to overscroll for edge effects
