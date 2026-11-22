@@ -99,7 +99,7 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
     private final Handler mHandler = new Handler();
     private final List<TileInfo> mTiles = new ArrayList<>();
     private final ItemTouchHelper mItemTouchHelper;
-    private ItemDecoration mDecoration;
+    private final TileItemDecoration mDecoration;
     private final MarginTileDecoration mMarginDecoration;
     private final int mMinNumTiles;
     private final QSHost mHost;
@@ -745,7 +745,9 @@ public class TileAdapter extends RecyclerView.Adapter<Holder> implements TileSta
     };
 
     public void updateThemeColors() {
-        mDecoration.updateDrawable(mContext);
+        if (mDecoration != null) {
+            mDecoration.updateDrawable(mContext);
+        }
         notifyDataSetChanged();
     }
 
