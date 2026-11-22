@@ -19,8 +19,7 @@
 <!-- This should in sync with task_open_enter.xml -->
 <set xmlns:android="http://schemas.android.com/apk/res/android"
      android:shareInterpolator="false"
-     android:zAdjustment="top"
-     android:hasRoundedCorners="true">
+     android:zAdjustment="top">
 
     <translate
         android:fromXDelta="100%"
@@ -28,7 +27,7 @@
         android:fillEnabled="true"
         android:fillBefore="true"
         android:fillAfter="true"
-        android:interpolator="@interpolator/fast_out_extra_slow_in"
+        android:interpolator="@interpolator/fast_out_slow_in"
         android:startOffset="0"
         android:duration="360"/>
 
