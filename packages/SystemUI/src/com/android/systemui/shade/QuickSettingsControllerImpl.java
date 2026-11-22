@@ -634,7 +634,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
 
     @Override
     public boolean getExpanded() {
-        return mSplitShadeEnabled || mShadeRepository.getLegacyIsQsExpanded().getValue();
+        return mShadeRepository.getLegacyIsQsExpanded().getValue();
     }
 
     @VisibleForTesting
@@ -827,7 +827,6 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
     public void closeQs() {
         if (mSplitShadeEnabled) {
             mShadeLog.d("Closing QS while in split shade");
-            return;
         }
         cancelExpansionAnimation();
         setExpansionHeight(getMinExpansionHeight());
@@ -839,12 +838,11 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
 
     @VisibleForTesting
     void setExpanded(boolean expanded) {
-        boolean legacyValue = mShadeRepository.getLegacyIsQsExpanded().getValue();
-        boolean changed = legacyValue != expanded;
-        if (changed || mSplitShadeEnabled) {
+        boolean changed = getExpanded() != expanded;
+        if (changed) {
             mShadeRepository.setLegacyIsQsExpanded(expanded);
             updateQsState();
-            mPanelViewControllerLazy.get().onQsExpansionChanged(getExpanded());
+            mPanelViewControllerLazy.get().onQsExpansionChanged(expanded);
             mShadeLog.logQsExpansionChanged("QS Expansion Changed.", expanded,
                     getMinExpansionHeight(), getMaxExpansionHeight(),
                     mStackScrollerOverscrolling, mAnimatorExpand, mAnimating);
@@ -858,23 +856,19 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
 
     /** update Qs height state */
     void setExpansionHeight(float height) {
-        if (mExpansionHeight == height && !mSplitShadeEnabled) {
+        if (mExpansionHeight == height) {
             return;
         }
         int maxHeight = getMaxExpansionHeight();
-        if (mSplitShadeEnabled) {
-            height = maxHeight;
-        } else {
-            height = Math.min(Math.max(
-                    height, getMinExpansionHeight()), maxHeight);
-        }
-        mFullyExpanded = (height == maxHeight && maxHeight != 0) || mSplitShadeEnabled;
+        height = Math.min(Math.max(
+                height, getMinExpansionHeight()), maxHeight);
+        mFullyExpanded = height == maxHeight && maxHeight != 0;
         boolean qsAnimatingAway = !mAnimatorExpand && mAnimating;
         if (height > getMinExpansionHeight() && !getExpanded()
                 && !mStackScrollerOverscrolling
                 && !mDozing && !qsAnimatingAway) {
             setExpanded(true);
-        } else if (!mSplitShadeEnabled && height <= getMinExpansionHeight()
+        } else if (height <= getMinExpansionHeight()
                 && getExpanded()) {
             setExpanded(false);
         }
@@ -1010,13 +1004,6 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
     void setShadeExpansion(float expandedHeight, float expandedFraction) {
         mShadeExpandedHeight = expandedHeight;
         mShadeExpandedFraction = expandedFraction;
-        if (mSplitShadeEnabled) {
-            if (mExpansionHeight != getMaxExpansionHeight()) {
-                mExpansionHeight = getMaxExpansionHeight();
-                mFullyExpanded = true;
-            }
-            updateExpansion();
-        }
     }
 
     @VisibleForTesting
@@ -1083,7 +1070,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
         }
 
         if (mQs == null) return;
-        mQs.setExpanded(mSplitShadeEnabled || getExpanded());
+        mQs.setExpanded(getExpanded());
     }
 
     /** update expanded state of QS */
@@ -1098,7 +1085,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
             squishiness = mNotificationStackScrollLayoutController
                     .getNotificationSquishinessFraction();
         }
-        final float qsExpansionFraction = mSplitShadeEnabled ? 1f : computeExpansionFraction();
+        final float qsExpansionFraction = computeExpansionFraction();
         final float adjustedExpansionFraction = mSplitShadeEnabled
                 ? 1f : computeExpansionFraction();
         mQs.setQsExpansion(
@@ -1138,7 +1125,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
                 ? getLockscreenShadeDragProgress()
                 : mShadeExpandedFraction;
         mShadeHeaderController.setShadeExpandedFraction(shadeExpandedFraction);
-        mShadeHeaderController.setQsExpandedFraction(mSplitShadeEnabled ? 1f : qsExpansionFraction);
+        mShadeHeaderController.setQsExpandedFraction(qsExpansionFraction);
         mShadeHeaderController.setQsVisible(mVisible);
 
         // Update the light bar
@@ -1242,12 +1229,12 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
      * as well based on the bounds of the shade and QS state.
      */
     void setClippingBounds() {
-        float qsExpansionFraction = mSplitShadeEnabled ? 1f : computeExpansionFraction();
+        float qsExpansionFraction = computeExpansionFraction();
         final int qsPanelBottomY = calculateBottomPosition(qsExpansionFraction);
         // Split shade has no QQS
         final boolean qqsVisible =
                 !mSplitShadeEnabled && qsExpansionFraction == 0 && qsPanelBottomY > 0;
-        final boolean qsVisible = mSplitShadeEnabled || qsExpansionFraction > 0;
+        final boolean qsVisible = qsExpansionFraction > 0;
         final boolean qsOrQqsVisible = qqsVisible || qsVisible;
         checkCorrectScrimVisibility(qsExpansionFraction);
 
@@ -2103,7 +2090,7 @@ public class QuickSettingsControllerImpl implements QuickSettingsController, Dum
         if (expandsQs && !isCancelMotionEvent) {
             flingType = FLING_EXPAND;
         } else if (mSplitShadeEnabled) {
-            flingType = FLING_EXPAND;
+            flingType = FLING_HIDE;
         } else {
             flingType = FLING_COLLAPSE;
         }
