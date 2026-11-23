@@ -630,6 +630,7 @@ final class ColorFade {
 
         mTransaction.setLayerStack(mSurfaceControl, mDisplayLayerStack);
         mTransaction.setWindowCrop(mSurfaceControl, mDisplayWidth, mDisplayHeight);
+        mTransaction.setTrustedOverlay(mSurfaceControl, true);
         mSurfaceLayout = new NaturalSurfaceLayout(mDisplayManagerInternal, mDisplayId,
                 mSurfaceControl);
         mSurfaceLayout.onDisplayTransaction(mTransaction);
@@ -643,6 +644,8 @@ final class ColorFade {
                     .setSecure(isSecure)
                     .setBLASTLayer();
             mBLASTSurfaceControl = b.build();
+            mTransaction.setTrustedOverlay(mBLASTSurfaceControl, true);
+            mTransaction.apply();
             mBLASTBufferQueue = new BLASTBufferQueue("ColorFade", mBLASTSurfaceControl,
                     mDisplayWidth, mDisplayHeight, PixelFormat.TRANSLUCENT);
             mSurface = mBLASTBufferQueue.createSurface();

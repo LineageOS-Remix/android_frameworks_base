@@ -318,7 +318,9 @@ constructor(
 
         communalContainerView = containerView
 
-        if (!Flags.hubmodeFullscreenVerticalSwipeFix()) {
+        // Disable setting large exclusion rects so that swipe up to bouncer/unlock remains
+        // responsive and accessible across the lower portion of the screen.
+        if (false && !Flags.hubmodeFullscreenVerticalSwipeFix()) {
             val topEdgeSwipeRegionWidth =
                 containerView.resources.getDimensionPixelSize(
                     R.dimen.communal_top_edge_swipe_region_height
@@ -507,6 +509,39 @@ constructor(
             return false
         }
 
+        val isDown = ev.actionMasked == MotionEvent.ACTION_DOWN
+
+        // If the hub is not currently showing, only intercept touches that initiate from
+        // the edge swipe region to open the hub. Touches elsewhere on the lockscreen must
+        // be passed through to Keyguard/NPVC so swipe-to-unlock and notification interactions
+        // work reliably without being hijacked.
+        if (!hubShowing) {
+            val container = communalContainerView
+            val rightEdgeSwipeRegionWidth =
+                container?.resources?.getDimensionPixelSize(
+                    R.dimen.communal_right_edge_swipe_region_width
+                ) ?: 0
+            val isEdgeSwipe =
+                if (container != null && rightEdgeSwipeRegionWidth > 0) {
+                    if (container.isLayoutRtl) {
+                        ev.x <= rightEdgeSwipeRegionWidth
+                    } else {
+                        ev.x >= container.width - rightEdgeSwipeRegionWidth
+                    }
+                } else {
+                    false
+                }
+
+            if (isDown) {
+                if (!isEdgeSwipe) {
+                    isTrackingHubTouch = false
+                    return false
+                }
+            } else if (!isTrackingHubTouch) {
+                return false
+            }
+        }
+
         // In the case that we are handling full swipes on the lockscreen, are on the lockscreen,
         // and the touch is within the horizontal notification band on the screen, do not process
         // the touch.
@@ -529,6 +564,7 @@ constructor(
                 bool3 = touchOnSmartspace
                 bool4 = glanceableHubV2
             }
+            isTrackingHubTouch = false
             return false
         }
 
@@ -543,19 +579,19 @@ constructor(
 
         val hubOccluded = anyBouncerShowing || shadeConsumingTouches || shadeShowing
 
-        if ((isDown || isMove) && !hubOccluded) {
-            if (isDown) {
-                logger.d({
-                    "Touch started. x: $int1, y: $int2, hubShowing: $bool1, isDreaming: $bool2, " +
-                        "onLockscreen: $bool3"
-                }) {
-                    int1 = ev.x.toInt()
-                    int2 = ev.y.toInt()
-                    bool1 = hubShowing
-                    bool2 = isDreaming
-                    bool3 = onLockscreen
-                }
+        if (isDown && !hubOccluded) {
+            logger.d({
+                "Touch started. x: $int1, y: $int2, hubShowing: $bool1, isDreaming: $bool2, " +
+                    "onLockscreen: $bool3"
+            }) {
+                int1 = ev.x.toInt()
+                int2 = ev.y.toInt()
+                bool1 = hubShowing
+                bool2 = isDreaming
+                bool3 = onLockscreen
             }
+            isTrackingHubTouch = true
+        } else if (isMove && !hubOccluded && hubShowing) {
             isTrackingHubTouch = true
         }
 

@@ -2609,6 +2609,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
             DejankUtils.startDetectingBlockingIpcs(tag);
             mNotificationShadeWindowController.batchApplyWindowLayoutParams(()-> {
                 mDeviceInteractive = true;
+                updateNotificationPanelTouchState();
 
                 boolean isFlaggedOff = MigrateClocksToBlueprint.isEnabled();
                 if (!isFlaggedOff && shouldAnimateDozeWakeup()) {

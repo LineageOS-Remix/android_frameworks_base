@@ -1971,11 +1971,11 @@
 
     <!-- The percentage of the screen from which a swipe can start to reveal the bouncer. -->
     <item name="dream_overlay_bouncer_start_region_screen_percentage" format="float" type="dimen">
-        .2
+        .35
     </item>
 
     <item name="dream_overlay_bouncer_min_region_screen_percentage" format="float" type="dimen">
-        .05
+        .2
     </item>
 
     <!-- The padding applied to the dream overlay container -->
